@@ -20,7 +20,7 @@ import (
 	"fmt"
 )
 
-const VERSION = "1.6.0"
+const VERSION = "1.6.1-docker"
 
 type GinkgoConfigType struct {
 	RandomSeed         int64
@@ -28,6 +28,7 @@ type GinkgoConfigType struct {
 	RegexScansFilePath bool
 	FocusString        string
 	SkipString         string
+	CustomSpecMatcher  func(string, []byte) bool
 	SkipMeasurements   bool
 	FailOnPending      bool
 	FailFast           bool

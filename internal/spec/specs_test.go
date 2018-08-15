@@ -111,7 +111,7 @@ var _ = Describe("Specs", func() {
 	Describe("with no programmatic focus", func() {
 		BeforeEach(func() {
 			specs = newSpecs("A1", noneFlag, "A2", noneFlag, "B1", noneFlag, "B2", pendingFlag)
-			specs.ApplyFocus("", "", "")
+			specs.ApplyFocus("", "", "", nil)
 		})
 
 		It("should not report as having programmatic specs", func() {
@@ -128,7 +128,7 @@ var _ = Describe("Specs", func() {
 
 		JustBeforeEach(func() {
 			specs = newSpecs("A1", focusedFlag, "A2", noneFlag, "B1", focusedFlag, "B2", pendingFlag)
-			specs.ApplyFocus(description, focusString, skipString)
+			specs.ApplyFocus(description, focusString, skipString, nil)
 		})
 
 		Context("with neither a focus string nor a skip string", func() {
@@ -251,7 +251,7 @@ var _ = Describe("Specs", func() {
 				pendingInFocused,
 				focusedInPending,
 			})
-			specs.ApplyFocus("", "", "")
+			specs.ApplyFocus("", "", "", nil)
 		})
 
 		It("should not have a programmatic focus and should run all tests", func() {

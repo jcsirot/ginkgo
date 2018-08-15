@@ -80,7 +80,7 @@ func (suite *Suite) generateSpecsIterator(description string, config config.Gink
 		specs.Shuffle(rand.New(rand.NewSource(config.RandomSeed)))
 	}
 
-	specs.ApplyFocus(description, config.FocusString, config.SkipString)
+	specs.ApplyFocus(description, config.FocusString, config.SkipString, config.CustomSpecMatcher)
 
 	if config.SkipMeasurements {
 		specs.SkipMeasurements()
