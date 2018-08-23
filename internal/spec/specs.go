@@ -38,7 +38,7 @@ func (e *Specs) Shuffle(r *rand.Rand) {
 
 func (e *Specs) ApplyFocus(description string, focusString string, skipString string, customMatcher func(string, []byte) bool) {
 	if customMatcher != nil {
-		e.applyCustomFocus(description, customMatcher)
+		e.applyCustomFocus(description, focusString, skipString, customMatcher)
 	} else if focusString == "" && skipString == "" {
 		e.applyProgrammaticFocus()
 	} else {
@@ -102,13 +102,15 @@ func (e *Specs) applyRegExpFocusAndSkip(description string, focusString string, 
 	}
 }
 
-func (e *Specs) applyCustomFocus(description string, customMatcher func(string, []byte) bool) {
+func (e *Specs) applyCustomFocus(description string, focusString string, skipString string, customMatcher func(string, []byte) bool) {
 	for _, spec := range e.specs {
 
 		toMatch := e.toMatch(description, spec)
 
 		if !customMatcher(description, toMatch) {
 			spec.Skip()
+		} else if focusString != "" || skipString != "" {
+			e.applyRegExpFocusAndSkip(description, focusString, skipString)
 		}
 	}
 }
