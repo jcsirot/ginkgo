@@ -74,12 +74,16 @@ func NewForwardingReporter(config config.DefaultReporterConfigType, serverHost s
 }
 
 func (reporter *ForwardingReporter) post(path string, data interface{}) {
-	encoded, _ := json.Marshal(data)
+	encoded, err := json.Marshal(data)
+	if err != nil {
+		fmt.Println(err)
+	}
 	buffer := bytes.NewBuffer(encoded)
 	reporter.poster.Post(reporter.serverHost+path, "application/json", buffer)
 }
 
 func (reporter *ForwardingReporter) SpecSuiteWillBegin(conf config.GinkgoConfigType, summary *types.SuiteSummary) {
+	fmt.Println(conf)
 	data := struct {
 		Config  config.GinkgoConfigType `json:"config"`
 		Summary *types.SuiteSummary     `json:"suite-summary"`

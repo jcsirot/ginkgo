@@ -10,7 +10,9 @@ where N is the number of nodes you desire.
 package remote
 
 import (
+	"fmt"
 	"time"
+	"runtime/debug"
 
 	"github.com/onsi/ginkgo/config"
 	"github.com/onsi/ginkgo/reporters/stenographer"
@@ -113,6 +115,7 @@ loop:
 }
 
 func (aggregator *Aggregator) registerSuiteBeginning(configAndSuite configAndSuite) {
+	fmt.Println(configAndSuite)
 	aggregator.aggregatedSuiteBeginnings = append(aggregator.aggregatedSuiteBeginnings, configAndSuite)
 
 	if len(aggregator.aggregatedSuiteBeginnings) == 1 {
