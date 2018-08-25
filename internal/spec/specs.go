@@ -1,6 +1,7 @@
 package spec
 
 import (
+	"github.com/onsi/ginkgo/config"
 	"math/rand"
 	"regexp"
 	"sort"
@@ -36,9 +37,10 @@ func (e *Specs) Shuffle(r *rand.Rand) {
 	e.specs = shuffledSpecs
 }
 
-func (e *Specs) ApplyFocus(description string, focusString string, skipString string, customMatcher func(string, []byte) bool) {
-	if customMatcher != nil {
-		e.applyCustomFocus(description, focusString, skipString, customMatcher)
+func (e *Specs) ApplyFocus(description string, focusString string, skipString string, customMatcher string) {
+	customMatcherFunc, foundMatcher := config.GlobalCustomMatchers[customMatcher]
+	if foundMatcher {
+		e.applyCustomFocus(description, focusString, skipString, customMatcherFunc)
 	} else if focusString == "" && skipString == "" {
 		e.applyProgrammaticFocus()
 	} else {

@@ -28,7 +28,8 @@ type GinkgoConfigType struct {
 	RegexScansFilePath bool
 	FocusString        string
 	SkipString         string
-	CustomSpecMatcher  func(string, []byte) bool
+	//CustomSpecMatcher  func(string, []byte) bool
+	CustomSpecMatcher  string
 	SkipMeasurements   bool
 	FailOnPending      bool
 	FailFast           bool
@@ -55,7 +56,17 @@ type DefaultReporterConfigType struct {
 	FullTrace         bool
 }
 
+var GlobalCustomMatchers map[string]func(string, []byte) bool
+
 var DefaultReporterConfig = DefaultReporterConfigType{}
+
+func init() {
+	GlobalCustomMatchers = make(map[string]func(string, []byte) bool)
+}
+
+func RegisterCustomMatcher(name string, matcher func(string, []byte) bool) {
+	GlobalCustomMatchers[name] = matcher
+}
 
 func processPrefix(prefix string) string {
 	if prefix != "" {
@@ -76,6 +87,7 @@ func Flags(flagSet *flag.FlagSet, prefix string, includeParallelFlags bool) {
 
 	flagSet.StringVar(&(GinkgoConfig.FocusString), prefix+"focus", "", "If set, ginkgo will only run specs that match this regular expression.")
 	flagSet.StringVar(&(GinkgoConfig.SkipString), prefix+"skip", "", "If set, ginkgo will only run specs that do not match this regular expression.")
+	flagSet.StringVar(&(GinkgoConfig.CustomSpecMatcher), prefix+"customMatcher", "", "If set, ginkgo will only run specs filtered by this matcher.")
 
 	flagSet.BoolVar(&(GinkgoConfig.RegexScansFilePath), prefix+"regexScansFilePath", false, "If set, ginkgo regex matching also will look at the file path (code location).")
 
@@ -135,6 +147,10 @@ func BuildFlagArgs(prefix string, ginkgo GinkgoConfigType, reporter DefaultRepor
 
 	if ginkgo.SkipString != "" {
 		result = append(result, fmt.Sprintf("--%sskip=%s", prefix, ginkgo.SkipString))
+	}
+
+	if ginkgo.CustomSpecMatcher != "" {
+		result = append(result, fmt.Sprintf("--%scustomMatcher=%s", prefix, ginkgo.CustomSpecMatcher))
 	}
 
 	if ginkgo.FlakeAttempts > 1 {
